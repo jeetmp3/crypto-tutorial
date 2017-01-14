@@ -1,0 +1,24 @@
+apply plugin: 'groovy'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compile("junit:junit:4.4")
+    testCompile "org.spockframework:spock-core:1.0-groovy-2.4"
+}
+
+sourceCompatibility = '1.8'
+targetCompatibility = 1.8
+
+test {
+    testLogging {
+        showStandardStreams = true
+    }
+
+    beforeTest { descriptor ->
+        logger.lifecycle("Running test: " + descriptor)
+    }
+}
