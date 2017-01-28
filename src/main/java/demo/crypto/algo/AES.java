@@ -9,6 +9,8 @@ import java.util.*;
  */
 public abstract class AES implements SymmetricAlogrithm {
 
+    private static EncryptionMode algorithm;
+
     private static byte[][] galoisFieldVector = {
             {2, 3, 1, 1},
             {1, 2, 3, 1},
@@ -18,6 +20,7 @@ public abstract class AES implements SymmetricAlogrithm {
 
     public static AES getInstance(EncryptionMode mode) {
         AES aes = null;
+        algorithm = mode;
         switch (mode) {
             case AES_128_ECB:
                 aes = new AES128ECBMode();
@@ -25,6 +28,8 @@ public abstract class AES implements SymmetricAlogrithm {
             case AES_192_ECB:
             case AES_256_ECB:
                 break;
+            case AES_128_CBC:
+                aes = new AES128CBCMode();
 
         }
         return aes;
@@ -36,7 +41,20 @@ public abstract class AES implements SymmetricAlogrithm {
     }
 
     @Override
+    public byte[] encrypt(String message, String key, String iv) {
+        if (Objects.nonNull(message) && Objects.nonNull(key) && Objects.nonNull(iv))
+            return encrypt(message.getBytes(), key.getBytes(), iv.getBytes());
+        else
+            throw new NullPointerException("Message, key & IV must not be null");
+    }
+
+    @Override
     public byte[] encrypt(byte[] message, byte[] key) {
+        return new byte[0];
+    }
+
+    @Override
+    public byte[] encrypt(byte[] message, byte[] key, byte[] iv) {
         return new byte[0];
     }
 
@@ -46,7 +64,20 @@ public abstract class AES implements SymmetricAlogrithm {
     }
 
     @Override
+    public byte[] decrypt(String message, String key, String iv) {
+        if (Objects.nonNull(message) && Objects.nonNull(key) && Objects.nonNull(iv))
+            return decrypt(message.getBytes(), key.getBytes(), iv.getBytes());
+        else
+            throw new NullPointerException("Message, key & IV must not be null");
+    }
+
+    @Override
     public byte[] decrypt(byte[] message, byte[] key) {
+        return new byte[0];
+    }
+
+    @Override
+    public byte[] decrypt(byte[] message, byte[] key, byte[] iv) {
         return new byte[0];
     }
 
@@ -100,7 +131,15 @@ public abstract class AES implements SymmetricAlogrithm {
      * @param key input key from user
      * @return expanded key
      */
-    protected abstract byte[] keyExpansion(byte[] key);
+    protected byte[] keyExpansion(byte[] key) {
+        byte[] key16byte = new byte[algorithm.getKeyBytes()];
+        int totalBytesToCopy = algorithm.getKeyBytes();
+        if (key.length < totalBytesToCopy) {
+            totalBytesToCopy = key.length;
+        }
+        System.arraycopy(key, 0, key16byte, 0, totalBytesToCopy);
+        return RijndaelAlgo.keySchedule(key16byte, EncryptionMode.AES_128_ECB);
+    }
 
     /**
      * This method will build state in matrix form. e.g:
@@ -177,15 +216,19 @@ public abstract class AES implements SymmetricAlogrithm {
         List<String> ciphers = breakHexCipherList(cipher);
         Set<String> set = new HashSet<>();
         boolean ecbDetected = false;
-        for(String c : ciphers) {
-            if(!set.add(c)) {
+        for (String c : ciphers) {
+            if (!set.add(c)) {
                 ecbDetected = true;
             }
         }
         return ecbDetected;
     }
 
-    private static List<String> breakHexCipherList(String cipher) {
-        return Arrays.asList(cipher.split("(?<=\\G.{32})"));
+    public static List<String> breakHexCipherList(String cipher) {
+        return breakHexCipherList(cipher, 32);
+    }
+
+    public static List<String> breakHexCipherList(String cipher, int chunkSize) {
+        return Arrays.asList(cipher.split("(?<=\\G.{" + chunkSize + "})"));
     }
 }

@@ -108,9 +108,9 @@ public class AESTest {
 
     @Test
     public void generateArrayWithPaddedDataTest() {
-        assertArrayEquals(new byte[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}, aes.generateArrayWithPaddedData(15));
-        assertArrayEquals(new byte[]{0, 0, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14}, aes.generateArrayWithPaddedData(2));
-        assertArrayEquals(new byte[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 6, 6, 6, 6}, aes.generateArrayWithPaddedData(10));
-        assertArrayEquals(new byte[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 5, 5, 5}, aes.generateArrayWithPaddedData(11));
+        assertArrayEquals(new byte[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}, AES.generateArrayWithPaddedData(15, 16));
+        assertArrayEquals(new byte[]{0, 0, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14}, AES.generateArrayWithPaddedData(2, 16));
+        assertArrayEquals(new byte[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 6, 6, 6, 6}, AES.generateArrayWithPaddedData(10, 16));
+        assertArrayEquals(new byte[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 5, 5, 5}, AES.generateArrayWithPaddedData(11, 16));
     }
 }

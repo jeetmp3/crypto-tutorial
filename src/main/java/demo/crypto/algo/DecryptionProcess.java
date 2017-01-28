@@ -9,6 +9,7 @@ import java.io.IOException;
 public class DecryptionProcess {
 
     private EncryptionMode algorithm;
+    private byte[] iv;
 
     private DecryptionProcess(EncryptionMode algo) {
         this.algorithm = algo;
@@ -18,11 +19,20 @@ public class DecryptionProcess {
         return new DecryptionProcess(algorithm);
     }
 
+    public DecryptionProcess initVector(byte[] vector) {
+        if (algorithm == EncryptionMode.AES_128_CBC && vector == null) {
+            throw new NullPointerException("IV cannot be null in CBC Mode");
+        }
+        this.iv = vector;
+        return this;
+    }
+
     public byte[] doFinal(byte[] data, byte[] expandedKey) {
         ByteArrayOutputStream cipherStream = new ByteArrayOutputStream();
         byte[] tmp = new byte[16];
         int index = 0;
         int total = data.length / 16;
+        byte[][] previousCipher = null;
         for (int i = 0; i < data.length; i += 16) {
             index++;
             System.arraycopy(data, i, tmp, 0, 16);
@@ -39,6 +49,8 @@ public class DecryptionProcess {
             }
 
             state = inverseAddRoundKey(state, AES.getGeneratedKey(expandedKey, 0, 16));
+            state = applyIV(state, previousCipher);
+            previousCipher = AES.arrayToStateMatrix(tmp);
             byte[] result = AES.stateMatrixToArray(state);
             if(index == total) {
                 result = AES.removePaddedData(result);
@@ -112,5 +124,28 @@ public class DecryptionProcess {
             result[i] = RijndaelAlgo.invMixColumn(result[i]);
         }
         return AES.transpose(result);
+    }
+
+    private byte[][] applyIV(byte[][] state, byte[][] previousState) {
+        if (algorithm == EncryptionMode.AES_128_CBC) {
+            if (previousState == null) {
+                byte[] ivBytes = iv;
+                int totalBytesToCopy = algorithm.getKeyBytes();
+                byte[] key16byte = new byte[totalBytesToCopy];
+                if (ivBytes.length < totalBytesToCopy) {
+                    totalBytesToCopy = ivBytes.length;
+                }
+                System.arraycopy(ivBytes, 0, key16byte, 0, totalBytesToCopy);
+                previousState = AES.arrayToStateMatrix(key16byte);
+            }
+            byte[][] result = new byte[4][4];
+            for (int i = 0; i < 4; i++) {
+                for (int j = 0; j < 4; j++) {
+                    result[i][j] = (byte) (state[i][j] ^ previousState[i][j]);
+                }
+            }
+            return result;
+        }
+        return state;
     }
 }

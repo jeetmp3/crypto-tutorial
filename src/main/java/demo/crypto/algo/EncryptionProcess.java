@@ -8,6 +8,7 @@ import java.io.IOException;
  */
 public class EncryptionProcess {
     private EncryptionMode algorithm;
+    private byte[] iv;
 
     private EncryptionProcess(EncryptionMode algorithm) {
         this.algorithm = algorithm;
@@ -17,12 +18,29 @@ public class EncryptionProcess {
         return new EncryptionProcess(algorithm);
     }
 
+    public EncryptionProcess initVector(String vector) {
+        if (algorithm == EncryptionMode.AES_128_CBC && (vector == null || "".equals(vector))) {
+            throw new NullPointerException("IV cannot be null in CBC Mode");
+        }
+        return initVector(vector.getBytes());
+    }
+
+    public EncryptionProcess initVector(byte[] vector) {
+        if (algorithm == EncryptionMode.AES_128_CBC && vector == null) {
+            throw new NullPointerException("IV cannot be null in CBC Mode");
+        }
+        this.iv = vector;
+        return this;
+    }
+
     public byte[] doFinal(byte[] data, byte[] expandedKey) {
         ByteArrayOutputStream cipherStream = new ByteArrayOutputStream();
         byte[] tmp = new byte[16];
+        byte[][] previousState = null;
         for (int i = 0; i < data.length; i += 16) {
             System.arraycopy(data, i, tmp, 0, 16);
             byte[][] state = AES.arrayToStateMatrix(tmp);
+            state = applyIV(state, previousState);
             state = addRoundKey(state, AES.getGeneratedKey(expandedKey, 0, 16));
             int j = 0;
             for (; j < (algorithm.getRounds() - 1); j++) {
@@ -35,7 +53,7 @@ public class EncryptionProcess {
             state = byteSubstitues(state);
             state = shiftRows(state);
             state = addRoundKey(state, AES.getGeneratedKey(expandedKey, (j + 1) * 16, 16));
-
+            previousState = state;
             try {
                 cipherStream.write(AES.stateMatrixToArray(state));
             } catch (IOException e) {
@@ -43,6 +61,29 @@ public class EncryptionProcess {
             }
         }
         return cipherStream.toByteArray();
+    }
+
+    private byte[][] applyIV(byte[][] state, byte[][] previousState) {
+        if (algorithm == EncryptionMode.AES_128_CBC) {
+            if (previousState == null) {
+                byte[] ivBytes = iv;
+                int totalBytesToCopy = algorithm.getKeyBytes();
+                byte[] key16byte = new byte[totalBytesToCopy];
+                if (ivBytes.length < totalBytesToCopy) {
+                    totalBytesToCopy = ivBytes.length;
+                }
+                System.arraycopy(ivBytes, 0, key16byte, 0, totalBytesToCopy);
+                previousState = AES.arrayToStateMatrix(key16byte);
+            }
+            byte[][] result = new byte[4][4];
+            for (int i = 0; i < 4; i++) {
+                for (int j = 0; j < 4; j++) {
+                    result[i][j] = (byte) (state[i][j] ^ previousState[i][j]);
+                }
+            }
+            return result;
+        }
+        return state;
     }
 
     /**
