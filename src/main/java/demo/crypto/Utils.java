@@ -2,6 +2,7 @@ package demo.crypto;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * @author Jitendra Singh.
@@ -13,6 +14,8 @@ public class Utils {
     private static Map<Byte, Character> reverseHexMap;
     private static Map<Byte, Character> base64Map;
     private static Map<Character, Byte> reverseBase64Map;
+    private static final String CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    static Random r = new Random();
 
     static {
         initializeHexMap();
@@ -263,5 +266,13 @@ public class Utils {
         byte[] result = new byte[input.length];
         System.arraycopy(input, 0, result, 0, input.length);
         return result;
+    }
+
+    public static String generateRandomString(int length) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            sb.append(CHARS.charAt(r.nextInt(CHARS.length())));
+        }
+        return sb.toString();
     }
 }

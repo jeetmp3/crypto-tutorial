@@ -18,19 +18,11 @@ public class Challenge14 extends Challenge12 {
     static Random r = new Random();
     static String randomString = generateRandomString();
 
-    private static final String CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
 
     static String generateRandomString() {
         int total = r.nextInt(100);
-        return generateRandomString(total);
-    }
-
-    static String generateRandomString(int length) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < length; i++) {
-            sb.append(CHARS.charAt(r.nextInt(CHARS.length())));
-        }
-        return sb.toString();
+        return Utils.generateRandomString(total);
     }
 
     public byte[] encryptOracle(String yourString) {

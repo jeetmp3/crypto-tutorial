@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class Challenge16 {
 
-    private static String randomKey = Challenge14.generateRandomString(16);
+    private static String randomKey = Utils.generateRandomString(16);
     static AES aesCBC = AES.getInstance(EncryptionMode.AES_128_CBC);
 
     public static void main(String[] args) {
