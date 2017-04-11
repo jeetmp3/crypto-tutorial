@@ -42,6 +42,11 @@ public class Challenge12 {
         System.out.println(AES.breakHexCipherList(str, size));
     }
 
+//    public byte[] encryptOracle(String yourString) {
+//        String unknownString = "Um9sbGluJyBpbiBteSA1LjAKV2l0aCBteSByYWctdG9wIGRvd24gc28gbXkgaGFpciBjYW4gYmxvdwpUaGUgZ2lybGllcyBvbiBzdGFuZGJ5IHdhdmluZyBqdXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUgYnkK";
+//        return encrypt(yourString, unknownString, key);
+//    }
+
     public byte[] encryptOracle(String yourString) {
         String unknownString = "Um9sbGluJyBpbiBteSA1LjAKV2l0aCBteSByYWctdG9wIGRvd24gc28gbXkgaGFpciBjYW4gYmxvdwpUaGUgZ2lybGllcyBvbiBzdGFuZGJ5IHdhdmluZyBqdXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUgYnkK";
         return encrypt(yourString, unknownString, key);
@@ -82,7 +87,7 @@ public class Challenge12 {
         return AES.checkECB(Utils.bytesToHex(result));
     }
 
-    private String decryptBytes(int blockSize) throws IOException {
+    protected String decryptBytes(int blockSize) throws IOException {
         StringBuilder decrypted = new StringBuilder();
         int currentBlock = 0;
         boolean breakLoop;
@@ -96,7 +101,7 @@ public class Challenge12 {
         return "";
     }
 
-    private boolean decryptBlock(int currentBlock, StringBuilder decrypted, int blockSize) {
+    protected boolean decryptBlock(int currentBlock, StringBuilder decrypted, int blockSize) {
         boolean breakLoop = false;
         for (int j = 1; j <= 16; j++) {
             Map<String, Byte> dictionary;
@@ -119,9 +124,9 @@ public class Challenge12 {
         return breakLoop;
     }
 
-    private Map<String, Byte> buildDictionary(byte[] tmp) {
+    protected Map<String, Byte> buildDictionary(byte[] tmp) {
         Map<String, Byte> dictionary = new HashMap<>();
-        for (byte b = Byte.MIN_VALUE; b < Byte.MAX_VALUE; b++) {
+        for (byte b = 0; b < Byte.MAX_VALUE; b++) {
             tmp[15] = b;
             List<String> blocks = AES.breakHexCipherList(Utils.bytesToHex(encryptOracle(new String(tmp))), 32);
             dictionary.put(blocks.get(0), b);
@@ -129,7 +134,7 @@ public class Challenge12 {
         return dictionary;
     }
 
-    private byte[] buildTmpBytesToGenerateDictionary(byte[] input, byte[] decrypted) {
+    protected byte[] buildTmpBytesToGenerateDictionary(byte[] input, byte[] decrypted) {
         byte[] tmp = new byte[input.length + decrypted.length];
         System.arraycopy(input, 0, tmp, 0, input.length);
         if (decrypted.length > 0) {

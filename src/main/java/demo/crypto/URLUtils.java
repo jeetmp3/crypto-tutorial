@@ -25,6 +25,20 @@ public class URLUtils {
         return lines;
     }
 
+    public static List<String> postReadLines(String link, String message, String key) throws IOException {
+        URL url = new URL(link);
+        List<String> lines = new ArrayList<>();
+        URLConnection connection = url.openConnection();
+        connection.connect();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        String line = null;
+        while ((line = reader.readLine()) != null) {
+            lines.add(line);
+        }
+        reader.close();
+        return lines;
+    }
+
     public static List<String> readFile(InputStream stream) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
         List<String> lines = new ArrayList<>();

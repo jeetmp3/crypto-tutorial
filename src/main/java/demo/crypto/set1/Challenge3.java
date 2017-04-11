@@ -14,7 +14,7 @@ public class Challenge3 {
         char key = '\0';
         for (char c = '0'; c <= 'z'; c++) {
             String decoded = decrypt(hex, c);
-//            System.out.println("Decrypted using: ["+c+"] found string : ["+decoded+"]");
+            System.out.println("Decrypted using: ["+c+"] found string : ["+decoded+"]");
             int tmpFrequncy = getFrequency(decoded);
             if (tmpFrequncy > maxFrequency) {
                 maxFrequency = tmpFrequncy;
