@@ -1,5 +1,6 @@
 package demo.crypto.test;
 
+import demo.crypto.Utils;
 import demo.crypto.algo.AES;
 import demo.crypto.algo.EncryptionMode;
 
@@ -7,26 +8,34 @@ import java.io.*;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
+import java.util.Arrays;
 
 /**
  * @author Jitendra Singh.
  */
 public class ECBVsCBC {
 
-    public static void main(String[] args) throws IOException {
-        String fileName = "bitmap";
-        String extension = ".gif";
-        String image = "/media/jitendra/Media/code-world/osc/poc/crypto-tutorial/" + fileName + extension;
-        String targetEcb = "/media/jitendra/Media/code-world/osc/poc/crypto-tutorial/" + fileName + "Ecb" + extension;
-        String targetCbc = "/media/jitendra/Media/code-world/osc/poc/crypto-tutorial/" + fileName + "Cbc" + extension;
-        byte[] input = readFile(image);
-        byte[] key = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
+//    public static void main(String[] args) throws IOException {
+//        String fileName = "bitmap";
+//        String extension = ".gif";
+//        String image = "/media/jitendra/Media/code-world/osc/poc/crypto-tutorial/" + fileName + extension;
+//        String targetEcb = "/media/jitendra/Media/code-world/osc/poc/crypto-tutorial/" + fileName + "Ecb" + extension;
+//        String targetCbc = "/media/jitendra/Media/code-world/osc/poc/crypto-tutorial/" + fileName + "Cbc" + extension;
+//        byte[] input = readFile(image);
+//        byte[] key = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
+//
+//        byte[] ecbBytes = ecbMode(input, key);
+//        byte[] cbcBytes = cbcMode(input, key, key);
+//
+//        writeFile(targetEcb, ecbBytes);
+//        writeFile(targetCbc, cbcBytes);
+//    }
 
-        byte[] ecbBytes = ecbMode(input, key);
-        byte[] cbcBytes = cbcMode(input, key, key);
-
-        writeFile(targetEcb, ecbBytes);
-        writeFile(targetCbc, cbcBytes);
+    public static void main(String[] args) {
+        String str = "h5EmEBMlP/79bAJMmd1xbVTxiTdFZ/a8N5329d8T/JY=";
+        byte[] result = Utils.decodeBase64(str);
+        System.out.println(result.length);
+        System.out.println(Arrays.toString(result));
     }
 
     private static byte[] ecbMode(byte[] bytes, byte[] key) {

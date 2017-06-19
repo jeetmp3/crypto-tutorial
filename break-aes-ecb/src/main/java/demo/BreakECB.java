@@ -25,7 +25,8 @@ public class BreakECB {
     }
 
     private String encryptOracle(String strMsg) {
-        HttpPost httpPost = new HttpPost("http://abc.com:8080/crypto/encryptOracle/AES_128_ECB");
+//        HttpPost httpPost = new HttpPost("http://abc.com:8080/crypto/encryptOracle/AES_128_ECB");
+        HttpPost httpPost = new HttpPost("http://localhost:8080/login");
         try {
             httpPost.setEntity(new UrlEncodedFormEntity(
                     Collections.singletonList(new BasicNameValuePair("message", strMsg))

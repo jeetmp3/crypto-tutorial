@@ -30,6 +30,9 @@ public abstract class AES implements SymmetricAlogrithm {
                 break;
             case AES_128_CBC:
                 aes = new AES128CBCMode();
+                break;
+            case AES_128_CTR:
+                aes = new AES128CTRMode();
 
         }
         return aes;
@@ -231,4 +234,6 @@ public abstract class AES implements SymmetricAlogrithm {
     public static List<String> breakHexCipherList(String cipher, int chunkSize) {
         return Arrays.asList(cipher.split("(?<=\\G.{" + chunkSize + "})"));
     }
+
+    public abstract EncryptionMode getEncryptionMode();
 }

@@ -175,6 +175,10 @@ public class Utils {
         return (byte) ((0xff & n) >> (8 - totalFirst));
     }
 
+    public static byte firstN(long n, int totalFirst) {
+        return (byte) (n >> (Long.SIZE - totalFirst));
+    }
+
     public static byte octet(byte first, int totalLast, byte second, int totalFirst) {
         byte left = lastN(first, totalLast);
         byte right = firstN(second, totalFirst);
@@ -274,5 +278,13 @@ public class Utils {
             sb.append(CHARS.charAt(r.nextInt(CHARS.length())));
         }
         return sb.toString();
+    }
+
+    public static int randomInt() {
+        return r.nextInt();
+    }
+
+    public static int randomInt(int bound) {
+        return r.nextInt(bound);
     }
 }

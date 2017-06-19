@@ -18,7 +18,7 @@ public class Challenge16 {
         String input = "nothing;user=true";
         String encrypted = encryptString(input);
         System.out.println("Cookie  : "+encrypted);
-        encrypted = expoitCookie(encrypted);
+        encrypted = exploitCookie(encrypted);
         System.out.println("Modified: "+encrypted);
         System.out.println("User is admin: "+decryptString(encrypted));
     }
@@ -53,12 +53,12 @@ public class Challenge16 {
         return found;
     }
 
-    private static String expoitCookie(String cookie) {
+    private static String exploitCookie(String cookie) {
         String hexStr = Utils.bytesToHex(Utils.decodeBase64(cookie));
         List<String> hexCiphers = AES.breakHexCipherList(hexStr, 32);
         String targetCipher = hexCiphers.get(2);
         byte[] data = Utils.hexToBytes(targetCipher);
-        byte[] targetBytes = {59, 97, 100, 109, 105, 110, 116, 114, 117, 101, 59};
+
         data[0] = (byte) (data[0] ^ 'u' ^ ';');
         data[1] = (byte) (data[1] ^ 's' ^ 'a');
         data[2] = (byte) (data[2] ^ 'e' ^ 'd');

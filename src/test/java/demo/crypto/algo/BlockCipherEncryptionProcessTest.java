@@ -8,9 +8,9 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Jitendra Singh.
  */
-public class EncryptionProcessTest {
+public class BlockCipherEncryptionProcessTest {
 
-    EncryptionProcess ep = EncryptionProcess.getInstance(EncryptionMode.AES_128_ECB);
+    BlockCipherEncryptionProcess ep = BlockCipherEncryptionProcess.getInstance(EncryptionMode.AES_128_ECB);
     /**
      * {2, 3, 1, 1},
      * {1, 2, 3, 1},

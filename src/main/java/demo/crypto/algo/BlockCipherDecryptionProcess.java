@@ -6,20 +6,28 @@ import java.io.IOException;
 /**
  * @author Jitendra Singh.
  */
-public class DecryptionProcess {
+public class BlockCipherDecryptionProcess {
 
     private EncryptionMode algorithm;
     private byte[] iv;
 
-    private DecryptionProcess(EncryptionMode algo) {
+    protected BlockCipherDecryptionProcess(EncryptionMode algo) {
         this.algorithm = algo;
     }
 
-    public static DecryptionProcess getInstance(EncryptionMode algorithm) {
-        return new DecryptionProcess(algorithm);
+    public static BlockCipherDecryptionProcess getInstance(EncryptionMode algorithm) {
+        return new BlockCipherDecryptionProcess(algorithm);
     }
 
-    public DecryptionProcess initVector(byte[] vector) {
+    public EncryptionMode getAlgorithm() {
+        return algorithm;
+    }
+
+    public byte[] getIv() {
+        return iv;
+    }
+
+    public BlockCipherDecryptionProcess initVector(byte[] vector) {
         if (algorithm == EncryptionMode.AES_128_CBC && vector == null) {
             throw new NullPointerException("IV cannot be null in CBC Mode");
         }
@@ -52,9 +60,9 @@ public class DecryptionProcess {
             state = applyIV(state, previousCipher);
             previousCipher = AES.arrayToStateMatrix(tmp);
             byte[] result = AES.stateMatrixToArray(state);
-            if(index == total) {
-                result = AES.removePaddedData(result);
-            }
+//            if(index == total) {
+//                result = AES.removePaddedData(result);
+//            }
             try {
                 cipherStream.write(result);
             } catch (IOException e) {
@@ -83,7 +91,7 @@ public class DecryptionProcess {
     }
 
     /**
-     * This method will inverse of substitute byte ( {@link EncryptionProcess#byteSubstitues(byte[][])} )
+     * This method will inverse of substitute byte ( {@link BlockCipherEncryptionProcess#byteSubstitues(byte[][])} )
      *
      * @param state input byte of 16 bytes
      * @return return substituted bytes by using Rijndael S Box
@@ -97,7 +105,7 @@ public class DecryptionProcess {
     }
 
     /**
-     * Inverse of {@link EncryptionProcess#shiftRows(byte[][])}
+     * Inverse of {@link BlockCipherEncryptionProcess#shiftRows(byte[][])}
      *
      * @param state
      * @return
@@ -113,7 +121,7 @@ public class DecryptionProcess {
     }
 
     /**
-     * Inverse of {@link EncryptionProcess#mixColumns(byte[][])}
+     * Inverse of {@link BlockCipherEncryptionProcess#mixColumns(byte[][])}
      *
      * @param state
      * @return

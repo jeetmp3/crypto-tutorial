@@ -52,6 +52,8 @@ public class Challenge12 {
         return encrypt(yourString, unknownString, key);
     }
 
+
+
     public void decryptString() throws IOException {
         int blockSize = blockSize();
         if(checkECB()) {

@@ -7,9 +7,9 @@ import static org.junit.Assert.*;
 /**
  * @author Jitendra Singh.
  */
-public class DecryptionProcessTest {
+public class BlockCipherDecryptionProcessTest {
 
-    DecryptionProcess dp = DecryptionProcess.getInstance(EncryptionMode.AES_128_ECB);
+    BlockCipherDecryptionProcess dp = BlockCipherDecryptionProcess.getInstance(EncryptionMode.AES_128_ECB);
     @Test
     public void inverseShiftRowTest() {
         byte[][] state = {

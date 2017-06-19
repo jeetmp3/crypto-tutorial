@@ -6,26 +6,34 @@ import java.io.IOException;
 /**
  * @author Jitendra Singh.
  */
-public class EncryptionProcess {
+public class BlockCipherEncryptionProcess {
     private EncryptionMode algorithm;
     private byte[] iv;
 
-    private EncryptionProcess(EncryptionMode algorithm) {
+    protected BlockCipherEncryptionProcess(EncryptionMode algorithm) {
         this.algorithm = algorithm;
     }
 
-    public static EncryptionProcess getInstance(EncryptionMode algorithm) {
-        return new EncryptionProcess(algorithm);
+    public byte[] getIv() {
+        return this.iv;
     }
 
-    public EncryptionProcess initVector(String vector) {
+    public EncryptionMode getAlgorithm() {
+        return algorithm;
+    }
+
+    public static BlockCipherEncryptionProcess getInstance(EncryptionMode algorithm) {
+        return new BlockCipherEncryptionProcess(algorithm);
+    }
+
+    public BlockCipherEncryptionProcess initVector(String vector) {
         if (algorithm == EncryptionMode.AES_128_CBC && (vector == null || "".equals(vector))) {
             throw new NullPointerException("IV cannot be null in CBC Mode");
         }
         return initVector(vector.getBytes());
     }
 
-    public EncryptionProcess initVector(byte[] vector) {
+    public BlockCipherEncryptionProcess initVector(byte[] vector) {
         if (algorithm == EncryptionMode.AES_128_CBC && vector == null) {
             throw new NullPointerException("IV cannot be null in CBC Mode");
         }
@@ -63,7 +71,7 @@ public class EncryptionProcess {
         return cipherStream.toByteArray();
     }
 
-    private byte[][] applyIV(byte[][] state, byte[][] previousState) {
+    protected byte[][] applyIV(byte[][] state, byte[][] previousState) {
         if (algorithm == EncryptionMode.AES_128_CBC) {
             if (previousState == null) {
                 byte[] ivBytes = iv;

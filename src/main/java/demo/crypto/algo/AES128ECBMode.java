@@ -5,19 +5,22 @@ package demo.crypto.algo;
  */
 class AES128ECBMode extends AES {
 
-    private EncryptionMode algorithm = EncryptionMode.AES_128_ECB;
-
     @Override
     public byte[] encrypt(byte[] message, byte[] key) {
         byte[] expandedKey = keyExpansion(key);
         byte[] data = paddedData(message);
-        return EncryptionProcess.getInstance(algorithm).doFinal(data, expandedKey);
+        return BlockCipherEncryptionProcess.getInstance(getEncryptionMode()).doFinal(data, expandedKey);
     }
 
     @Override
     public byte[] decrypt(byte[] message, byte[] key) {
         byte[] expandedKey = keyExpansion(key);
         byte[] data = paddedData(message);
-        return DecryptionProcess.getInstance(algorithm).doFinal(data, expandedKey);
+        return BlockCipherDecryptionProcess.getInstance(getEncryptionMode()).doFinal(data, expandedKey);
+    }
+
+    @Override
+    public EncryptionMode getEncryptionMode() {
+        return EncryptionMode.AES_128_ECB;
     }
 }

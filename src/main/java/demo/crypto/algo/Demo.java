@@ -8,7 +8,7 @@ import demo.crypto.Utils;
 public class Demo {
 
     static AES aes = AES.getInstance(EncryptionMode.AES_128_ECB);
-    static EncryptionProcess ep = EncryptionProcess.getInstance(EncryptionMode.AES_128_ECB);
+    static BlockCipherEncryptionProcess ep = BlockCipherEncryptionProcess.getInstance(EncryptionMode.AES_128_ECB);
 
     public static void main(String[] args) {
         byte[][] state = {

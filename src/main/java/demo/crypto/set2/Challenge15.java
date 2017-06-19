@@ -24,7 +24,14 @@ public class Challenge15 {
     public static boolean checkIfPKCS7Padding(byte[] dataBytes) {
         if (dataBytes != null && dataBytes.length > 0) {
             byte lastByte = dataBytes[dataBytes.length - 1];
-            if (dataBytes.length < lastByte) {
+            return checkIfPKCS7Padding(dataBytes, lastByte);
+        }
+        return false;
+    }
+
+    public static boolean checkIfPKCS7Padding(byte[] dataBytes, byte lastByte) {
+        if (dataBytes != null && dataBytes.length > 0) {
+            if (dataBytes.length < lastByte || lastByte == 0) {
                 return false;
             }
             boolean padding = true;
